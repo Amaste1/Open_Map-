@@ -1,0 +1,29 @@
+function DouglasPeucker(PointList[], epsilon)
+        // проводим прямую между границами отрезка
+        //ищем все значения перпендикуляров от точек до прямой
+    dmax = 0
+    index = 0
+    end = length(PointList)
+    for i = 2 to (end - 1) {
+        d = perpendicularDistance(PointList[i], Line(PointList[1], PointList[end])) 
+        if (d > dmax) {
+            index = i
+            dmax = d
+        }
+    }
+    
+ResultList[] = empty;
+//если точка, максимально удаленная от перпендикуляра, больше значения точности
+    //рекурсивно вызываем функцию на 2 образовавшихся отрезках
+if (dmax >= epsilon) {
+    recResults1[] = DouglasPeucker(PointList[1...index], epsilon)
+    recResults2[] = DouglasPeucker(PointList[index...end], epsilon)
+
+    //составляем результат
+    ResultList[] = {recResults1[1...length(recResults1) - 1], recResults2[1...length(recResults2)]}
+} else {
+    ResultList[] = {PointList[1], PointList[end]}
+}
+return ResultList[]
+
+end;
