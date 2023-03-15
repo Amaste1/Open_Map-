@@ -1,31 +1,24 @@
 import osmnx as ox
 import networkx as nx
 
+
 ox.config(log_console=True, use_cache=True)
 
-# define the start and end locations in latlng
-start_latlng = (358.59354,-49.65522)
-end_latlng = (58.59886, 49.66779)
+start_latlng = (58.59886, 49.66779)
+end_latlng = (58.555152, 49.64137)
 
-# location where you want to find your route
-place = 'Kirov, Russia'
+place = 'Kirov,Kirov Oblast,Volga Federal District,Russia'
+mode = 'drive'
+optimizer = 'time'
 
-# find shortest route based on the mode of travel
-mode = 'walk' # 'drive', 'bike', 'walk'
-
-# find shortest path based on distance or time
-optimizer = 'time' # 'length','time'
-
-# create graph from OSM within the boundaries of some
-# geocodable place(s)
 graph = ox.graph_from_place(place, network_type = mode)
-
-# find the nearest node to the start location
-orig_node = ox.get_nearest_node(graph, start_latlng)
-
-# find the nearest node to the end location
-dest_node = ox.get_nearest_node(graph, end_latlng)
-
-# find the shortest path
-shortest_route = nx.shortest_path(graph, orig_node,dest_node,
+# найдите ближайший узел к начальному местоположению
+orig_node = ox.nearest_nodes(graph, 49.66779, 58.59886)
+# найдите ближайший узел к конечному местоположению
+dest_node = ox.nearest_nodes(graph, 49.64137, 58.555152)
+# найти кратчайший путь
+shortest_route = nx.shortest_path(graph, orig_node, dest_node,
                                   weight=optimizer)
+shortest_route_map = ox.plot_route_folium(graph, shortest_route,
+                                          tiles='openstreetmap')
+shortest_route_map.save('map.html')
